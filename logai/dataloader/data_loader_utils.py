@@ -55,7 +55,7 @@ def log_to_dataframe(log_file, regex, headers):
     return logdf
 
 
-def load_data(filename, log_format):
+def load_data(filename: str, log_format: str):
     """
     Loads log from given file and format.
 

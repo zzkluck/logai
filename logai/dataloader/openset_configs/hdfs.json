@@ -3,7 +3,7 @@
   "dimensions": {
     "timestamp": ["Date", "Time"],
     "body": ["Content"],
-    "attributes": ["Level"],
+    "severity_text": ["Level"],
     "span_id": ["Pid"]
   },
   "infer_datetime": true,

@@ -1,0 +1,26 @@
+{
+  "log_type": "log",
+  "dimensions": {
+    "timestamp": [
+      "Date",
+      "Time"
+    ],
+    "body": [
+      "Content"
+    ],
+    "severity_text": [
+      "Level"
+    ],
+    "trace_id": [
+      "Pid"
+    ],
+    "span_id": [
+      "Module"
+    ]
+  },
+  "infer_datetime": true,
+  "datetime_format": "%Y-%m-%d %H:%M:%S.%f",
+  "reader_args": {
+    "log_format": "<Date> <Time> \\[<Pid>\\] <Level> <Module>:<Line> - <Content>"
+  }
+}

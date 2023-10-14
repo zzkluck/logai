@@ -90,7 +90,6 @@ class FileDataLoader:
                 regex += "(?P<%s>.*?)" % header
                 headers.append(header)
         regex = re.compile("^" + regex + "$")
-
         log_messages = []
         cnt = 0
         with open(fpath, "r") as fin:
@@ -104,14 +103,37 @@ class FileDataLoader:
                 except Exception as e:
                     logging.error("Read log file failed. Exception {}.".format(e))
 
+
         logdf = pd.DataFrame(log_messages, columns=headers, dtype=str)
         return logdf
 
+    @staticmethod
+    def _agg_and_rename_selected(selected_df, field_name) -> pd.DataFrame:
+        column_name_map = {
+            "body"          :(constants.LOGLINE_NAME,   False),
+            "span_id"       :(constants.SPAN_ID,        True),
+            "labels"        :(constants.Field.LABELS,   False),
+            "timestamp"     :(constants.LOG_TIMESTAMPS, False),
+            "severity_text" :("Severity",               False),
+            "trace_id"      :("trace_id",               False)
+        }
+        if field_name in column_name_map:
+            new_name, must_be_single = column_name_map[field_name]
+            if len(selected_df.columns) > 1:
+                if must_be_single:
+                    raise RuntimeError("span_id should be single column")
+                else:
+                    return pd.DataFrame(
+                        selected_df.agg(lambda x: " ".join(x.values), axis=1)
+                                   .rename(new_name))
+            else:
+                selected_df.columns = [new_name]
+                return selected_df
+            
     def _create_log_record_object(self, df: pd.DataFrame):
         dims = self.config.dimensions
         log_record = LogRecordObject()
         # Read all available log fields from config.
-
         if not dims:
             selected = pd.DataFrame(
                 df.agg(lambda x: " ".join(x.values), axis=1).rename(
@@ -123,38 +145,13 @@ class FileDataLoader:
             for field in LogRecordObject.__dataclass_fields__:
                 if field in dims.keys():
                     selected = df[list(dims[field])]
-                    if field == "body":
-                        if len(selected.columns) > 1:
-                            selected = pd.DataFrame(
-                                selected.agg(
-                                    lambda x: " ".join(x.values), axis=1
-                                ).rename(constants.LOGLINE_NAME)
-                            )
-                        else:
-                            selected.columns = [constants.LOGLINE_NAME]
-                    if field == "span_id":
-                        if len(selected.columns) > 1:
-                            raise RuntimeError("span_id should be single column")
-                        selected.columns = [constants.SPAN_ID]
-
-                    if field == "labels":
-                        selected.columns = [constants.Field.LABELS]
-
-                    if field == "timestamp":
-                        if len(selected.columns) > 1:
-                            selected = pd.DataFrame(
-                                selected.agg(
-                                    lambda x: " ".join(x.values), axis=1
-                                ).rename(constants.LOG_TIMESTAMPS)
-                            )
-                        selected.columns = [constants.LOG_TIMESTAMPS]
-                        if self.config.infer_datetime and self.config.datetime_format:
-                            datetime_format = self.config.datetime_format
-                            selected[constants.LOG_TIMESTAMPS] = pd.to_datetime(
-                                selected[constants.LOG_TIMESTAMPS],
-                                format=datetime_format,
-                            )
-
+                    selected = self._agg_and_rename_selected(selected, field)
+                    if field == "timestamp" and self.config.infer_datetime and self.config.datetime_format:
+                        datetime_format = self.config.datetime_format
+                        selected[constants.LOG_TIMESTAMPS] = pd.to_datetime(
+                            selected[constants.LOG_TIMESTAMPS],
+                            format=datetime_format,
+                        )
                     setattr(log_record, field, selected)
         # log_record.__post_init__()
         return log_record

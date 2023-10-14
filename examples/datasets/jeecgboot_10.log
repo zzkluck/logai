@@ -1,0 +1,10 @@
+2023-05-12 17:30:09.025 [main] INFO  org.aisp.AispApplication:50 - Starting AispApplication v1.0.0 on AISPapp-194-193 with PID 6756 (E:\java\aisp-module-system-1.0.0.jar started by Administrator in E:\java)
+2023-05-12 17:30:09.119 [main] INFO  org.aisp.AispApplication:679 - The following profiles are active: prod
+2023-05-12 17:30:11.847 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:244 - Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-05-12 17:30:11.847 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:126 - Bootstrapping Spring Data repositories in DEFAULT mode.
+2023-05-12 17:30:12.175 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:182 - Finished Spring Data repository scanning in 78ms. Found 0 repository interfaces.
+2023-05-12 17:30:12.801 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330 - Bean 'shiroConfig' of type [org.aisp.config.ShiroConfig$$EnhancerBySpringCGLIB$$93723986] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2023-05-12 17:30:12.941 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330 - Bean 'shiroRealm' of type [org.aisp.modules.shiro.authc.ShiroRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2023-05-12 17:30:13.395 [main] INFO  org.aisp.config.ShiroConfig:203 - ===============(1)创建缓存管理器RedisCacheManager
+2023-05-12 17:30:13.395 [main] INFO  org.aisp.config.ShiroConfig:221 - ===============(2)创建RedisManager,连接Redis..URL= 10.10.194.196:16379
+2023-05-12 17:30:13.410 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330 - Bean 'redisManager' of type [org.crazycake.shiro.RedisManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
